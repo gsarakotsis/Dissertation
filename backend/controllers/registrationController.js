@@ -1,4 +1,5 @@
 const Registration = require('../models/Registration');
+const { sendRegistrationConfirmation } = require('../utils/emailService')
 const Event = require('../models/Event');
 const crypto = require('crypto');
 
@@ -52,9 +53,12 @@ const registerForEvent = async (req, res) => {
       fullName, email, phoneNumber,
       department, dietaryRequirements, specialNeeds,
       confirmationCode
-    });
+    })
 
-    await Event.findByIdAndUpdate(eventId, { $inc: { currentAttendees: 1 } });
+    await Event.findByIdAndUpdate(eventId, { $inc: { currentAttendees: 1 } })
+
+    // Send confirmation email
+    sendRegistrationConfirmation(email, fullName, event, confirmationCode)
 
     res.status(201).json(registration);
   } catch (error) {

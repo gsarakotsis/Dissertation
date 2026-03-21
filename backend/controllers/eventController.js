@@ -1,4 +1,6 @@
 const Event = require('../models/Event');
+const { sendEventApproved, sendEventRejected } = require('../utils/emailService')
+const User = require('../models/User')
 
 // GET /api/events
 const getEvents = async (req, res) => {
@@ -111,13 +113,19 @@ const approveEvent = async (req, res) => {
       status: 'published',
       approvedBy: req.user._id,
       approvalDate: new Date()
-    }, { new: true });
-    if (!event) return res.status(404).json({ message: 'Event not found' });
-    res.json(event);
+    }, { new: true })
+    if (!event) return res.status(404).json({ message: 'Event not found' })
+
+    const organizer = await User.findById(event.organizer)
+    if (organizer) {
+      sendEventApproved(organizer.email, organizer.fullName, event)
+    }
+
+    res.json(event)
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
-};
+}
 
 // PATCH /api/events/:id/reject
 const rejectEvent = async (req, res) => {
@@ -125,12 +133,18 @@ const rejectEvent = async (req, res) => {
     const event = await Event.findByIdAndUpdate(req.params.id, {
       status: 'rejected',
       rejectionReason: req.body.reason || ''
-    }, { new: true });
-    if (!event) return res.status(404).json({ message: 'Event not found' });
-    res.json(event);
+    }, { new: true })
+    if (!event) return res.status(404).json({ message: 'Event not found' })
+
+    const organizer = await User.findById(event.organizer)
+    if (organizer) {
+      sendEventRejected(organizer.email, organizer.fullName, event.title, req.body.reason)
+    }
+
+    res.json(event)
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
-};
+}
 
 module.exports = { getEvents, getMyEvents, getEventById, createEvent, updateEvent, deleteEvent, approveEvent, rejectEvent };
