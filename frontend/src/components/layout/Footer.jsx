@@ -43,7 +43,7 @@ const Footer = () => {
         color: '#a0a0a0',
         fontSize: '14px'
       }}>
-        <p>&copy; 2025 EventHub. All rights reserved.</p>
+        <p>&copy; 2026 EventHub. All rights reserved.</p>
       </div>
     </footer>
   )
