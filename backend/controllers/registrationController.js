@@ -86,4 +86,15 @@ const cancelRegistration = async (req, res) => {
   }
 };
 
-module.exports = { getRegistrations, getMyRegistrations, registerForEvent, cancelRegistration };
+const getEventRegistrations = async (req, res) => {
+  try {
+    const registrations = await Registration.find({ event: req.params.eventId })
+      .populate('user', 'fullName email')
+      .sort({ createdAt: -1 })
+    res.json(registrations)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+module.exports = { getRegistrations, getMyRegistrations, getEventRegistrations, registerForEvent, cancelRegistration }
