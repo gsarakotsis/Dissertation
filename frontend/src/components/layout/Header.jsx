@@ -10,6 +10,19 @@ const Header = () => {
     navigate('/')
   }
 
+  const getDashboardLink = () => {
+    if (user?.role === 'admin' || user?.role === 'cc_organizer') return '/dashboard'
+    if (user?.role === 'external_organizer') return '/external-dashboard'
+    return '/profile'
+  }
+
+  const getDashboardLabel = () => {
+    if (user?.role === 'admin') return 'Admin Dashboard'
+    if (user?.role === 'cc_organizer') return 'Dashboard'
+    if (user?.role === 'external_organizer') return 'My Dashboard'
+    return 'My Profile'
+  }
+
   return (
     <header style={{
       backgroundColor: '#ffffff',
@@ -24,6 +37,7 @@ const Header = () => {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
+
         {/* Logo */}
         <Link to="/" style={{ textDecoration: 'none', fontSize: '32px', fontWeight: '700' }}>
           <span style={{ color: '#1a1a1a' }}>Event</span>
@@ -32,9 +46,18 @@ const Header = () => {
 
         {/* Nav */}
         <nav style={{ display: 'flex', gap: '40px' }}>
-          <Link to="/" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: '18px', fontWeight: '600' }}>Home</Link>
-          <Link to="/events" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: '18px', fontWeight: '600' }}>Events</Link>
-          <Link to="/about" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: '18px', fontWeight: '600' }}>About</Link>
+          <Link to="/" style={{
+            color: '#1a1a1a', textDecoration: 'none',
+            fontSize: '18px', fontWeight: '600'
+          }}>Home</Link>
+          <Link to="/events" style={{
+            color: '#1a1a1a', textDecoration: 'none',
+            fontSize: '18px', fontWeight: '600'
+          }}>Events</Link>
+          <Link to="/about" style={{
+            color: '#1a1a1a', textDecoration: 'none',
+            fontSize: '18px', fontWeight: '600'
+          }}>About</Link>
         </nav>
 
         {/* Auth Buttons */}
@@ -44,28 +67,31 @@ const Header = () => {
               <span style={{ fontSize: '15px', color: '#666', fontWeight: '600' }}>
                 {user.fullName}
               </span>
-              {user.role === 'admin' || user.role === 'cc_organizer' ? (
-                <Link to="/dashboard" style={{
-                  backgroundColor: 'transparent',
-                  border: '2px solid #1a1a1a',
-                  color: '#1a1a1a',
-                  padding: '10px 25px',
-                  borderRadius: '8px',
-                  fontWeight: '600',
-                  fontSize: '16px',
-                  textDecoration: 'none'
-                }}>Dashboard</Link>
-              ) : null}
+              <Link to={getDashboardLink()} style={{
+                color: '#1a1a1a',
+                backgroundColor: 'transparent',
+                border: '2px solid #1a1a1a',
+                padding: '10px 25px',
+                borderRadius: '8px',
+                fontWeight: '600',
+                fontSize: '15px',
+                textDecoration: 'none',
+                transition: 'all 0.3s'
+              }}>
+                {getDashboardLabel()}
+              </Link>
               <button onClick={handleLogout} style={{
                 backgroundColor: '#ff6b35',
                 color: '#ffffff',
                 border: 'none',
-                padding: '12px 30px',
+                padding: '12px 25px',
                 borderRadius: '8px',
                 fontWeight: '600',
-                fontSize: '16px',
+                fontSize: '15px',
                 cursor: 'pointer'
-              }}>Logout</button>
+              }}>
+                Logout
+              </button>
             </>
           ) : (
             <>

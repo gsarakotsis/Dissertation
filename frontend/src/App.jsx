@@ -6,9 +6,8 @@ import NotFoundPage from './pages/NotFoundPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/admin/DashboardPage'
-import CreateEventPage from './pages/admin/CreateEventPage'
+import EventFormPage from './pages/EventFormPage'
 import ExternalDashboardPage from './pages/ExternalDashboardPage'
-import ProposeEventPage from './pages/ProposeEventPage'
 import ProfilePage from './pages/ProfilePage'
 import ProtectedRoute from './components/ProtectedRoute'
 import AboutPage from './pages/AboutPage'
@@ -25,12 +24,14 @@ function App() {
 
         <Route element={<ProtectedRoute roles={['admin', 'cc_organizer']} />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/dashboard/create-event" element={<CreateEventPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute roles={['admin', 'cc_organizer', 'external_organizer']} />}>
+          <Route path="/event-form" element={<EventFormPage />} />
         </Route>
 
         <Route element={<ProtectedRoute roles={['external_organizer']} />}>
           <Route path="/external-dashboard" element={<ExternalDashboardPage />} />
-          <Route path="/propose-event" element={<ProposeEventPage />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
