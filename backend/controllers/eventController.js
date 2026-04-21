@@ -5,24 +5,30 @@ const User = require('../models/User')
 // GET /api/events
 const getEvents = async (req, res) => {
   try {
-    const { search, type, status, department } = req.query;
-    let query = { status: 'published' };
+    const { search, type, department, showAll } = req.query
 
-    if (status && req.user?.role === 'admin') delete query.status;
-    if (search) query.$text = { $search: search };
-    if (type) query.eventType = type;
-    if (department) query.department = { $regex: department, $options: 'i' };
+    let query = {}
+
+    if (showAll && req.user?.role === 'admin') {
+      // Admin βλέπει όλα τα events
+    } else {
+      query.status = 'published'
+    }
+
+    if (search) query.$text = { $search: search }
+    if (type) query.eventType = type
+    if (department) query.department = { $regex: department, $options: 'i' }
 
     const events = await Event.find(query)
       .populate('organizer', 'fullName email')
       .populate('location')
-      .sort({ eventDate: 1 });
+      .sort({ eventDate: 1 })
 
-    res.json(events);
+    res.json(events)
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
-};
+}
 
 // GET /api/events/my-events
 const getMyEvents = async (req, res) => {
