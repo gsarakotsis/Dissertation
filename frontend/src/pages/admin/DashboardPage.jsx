@@ -45,32 +45,34 @@ const DashboardPage = () => {
     }
   }
   const fetchData = async () => {
-    try {
-      const [eventsRes, usersRes, locationsRes] = await Promise.all([
-        API.get('/events/my-events'),
-        user?.role === 'admin' ? API.get('/users') : Promise.resolve({ data: [] }),
-        API.get('/locations')
-      ])
-      setEvents(eventsRes.data)
-      setUsers(usersRes.data)
-      setLocations(locationsRes.data)
-      setPendingEvents(eventsRes.data.filter(e => e.status === 'pending'))
+  try {
+    const [eventsRes, usersRes, locationsRes] = await Promise.all([
+      user?.role === 'admin'
+        ? API.get('/events?showAll=true')
+        : API.get('/events/my-events'),
+      user?.role === 'admin' ? API.get('/users') : Promise.resolve({ data: [] }),
+      API.get('/locations')
+    ])
+    setEvents(eventsRes.data)
+    setUsers(usersRes.data)
+    setLocations(locationsRes.data)
+    setPendingEvents(eventsRes.data.filter(e => e.status === 'pending'))
 
-      if (eventsRes.data.length > 0) {
-        const feedbackPromises = eventsRes.data.map(e =>
-          API.get(`/feedback/event/${e._id}`)
-            .then(res => ({ eventTitle: e.title, eventId: e._id, ...res.data }))
-            .catch(() => null)
-        )
-        const feedbackResults = await Promise.all(feedbackPromises)
-        setAllFeedback(feedbackResults.filter(f => f && f.total > 0))
-      }
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setLoading(false)
+    if (eventsRes.data.length > 0) {
+      const feedbackPromises = eventsRes.data.map(e =>
+        API.get(`/feedback/event/${e._id}`)
+          .then(res => ({ eventTitle: e.title, eventId: e._id, ...res.data }))
+          .catch(() => null)
+      )
+      const feedbackResults = await Promise.all(feedbackPromises)
+      setAllFeedback(feedbackResults.filter(f => f && f.total > 0))
     }
+  } catch (err) {
+    console.error(err)
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleLogout = () => {
     logout()
