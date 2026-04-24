@@ -11,6 +11,7 @@ const locationSchema = new mongoose.Schema({
     enum: ['classroom', 'lab', 'hall', 'auditorium', 'conference', 'outdoor'],
     default: 'classroom'
   },
+  externalAddress: { type: String, default: '' },
   equipment: [{ type: String }],
   accessibility: { type: Boolean, default: false },
   photos: [{ type: String }],
