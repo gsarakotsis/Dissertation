@@ -1,8 +1,10 @@
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const HomePage = () => {
+  const { user } = useAuth()
   return (
     <div>
       <Header />
@@ -22,16 +24,15 @@ const HomePage = () => {
               Streamline event planning for departments and student organizations
             </p>
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-              <Link to="/register" style={{
+              <Link to={user ? '/event-form' : '/login'} style={{
                 backgroundColor: '#ff6b35',
                 color: '#ffffff',
-                padding: '18px 45px',
+                padding: '16px 40px',
                 borderRadius: '8px',
                 fontWeight: '700',
                 fontSize: '18px',
-                textDecoration: 'none',
-                boxShadow: '0 6px 20px rgba(255,107,53,0.4)'
-              }}>Get Started</Link>
+                textDecoration: 'none'
+              }}>Create Event</Link>
               <Link to="/events" style={{
                 backgroundColor: 'transparent',
                 color: '#ffffff',
@@ -87,7 +88,7 @@ const HomePage = () => {
             <p style={{ fontSize: '18px', color: '#666', marginBottom: '35px', lineHeight: '1.6' }}>
               Join departments, student clubs, and partner organizations
             </p>
-            <Link to="/register" style={{
+            <Link to={user ? '/event-form' : '/login'} style={{
               backgroundColor: '#ff6b35',
               color: '#ffffff',
               padding: '16px 40px',

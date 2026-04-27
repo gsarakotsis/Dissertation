@@ -19,12 +19,7 @@ const DashboardPage = () => {
   const [locationLoading, setLocationLoading] = useState(false)
   const [locationForm, setLocationForm] = useState({
     buildingName: '',
-    roomNumber: '',
-    roomName: '',
-    floor: '',
-    capacity: '',
-    roomType: 'classroom',
-    accessibility: false
+    roomName: ''
   })
   const [rejectModal, setRejectModal] = useState({ open: false, eventId: null, reason: '' })
 
@@ -45,34 +40,34 @@ const DashboardPage = () => {
     }
   }
   const fetchData = async () => {
-  try {
-    const [eventsRes, usersRes, locationsRes] = await Promise.all([
-      user?.role === 'admin'
-        ? API.get('/events?showAll=true')
-        : API.get('/events/my-events'),
-      user?.role === 'admin' ? API.get('/users') : Promise.resolve({ data: [] }),
-      API.get('/locations')
-    ])
-    setEvents(eventsRes.data)
-    setUsers(usersRes.data)
-    setLocations(locationsRes.data)
-    setPendingEvents(eventsRes.data.filter(e => e.status === 'pending'))
+    try {
+      const [eventsRes, usersRes, locationsRes] = await Promise.all([
+        user?.role === 'admin'
+          ? API.get('/events?showAll=true')
+          : API.get('/events/my-events'),
+        user?.role === 'admin' ? API.get('/users') : Promise.resolve({ data: [] }),
+        API.get('/locations')
+      ])
+      setEvents(eventsRes.data)
+      setUsers(usersRes.data)
+      setLocations(locationsRes.data)
+      setPendingEvents(eventsRes.data.filter(e => e.status === 'pending'))
 
-    if (eventsRes.data.length > 0) {
-      const feedbackPromises = eventsRes.data.map(e =>
-        API.get(`/feedback/event/${e._id}`)
-          .then(res => ({ eventTitle: e.title, eventId: e._id, ...res.data }))
-          .catch(() => null)
-      )
-      const feedbackResults = await Promise.all(feedbackPromises)
-      setAllFeedback(feedbackResults.filter(f => f && f.total > 0))
+      if (eventsRes.data.length > 0) {
+        const feedbackPromises = eventsRes.data.map(e =>
+          API.get(`/feedback/event/${e._id}`)
+            .then(res => ({ eventTitle: e.title, eventId: e._id, ...res.data }))
+            .catch(() => null)
+        )
+        const feedbackResults = await Promise.all(feedbackPromises)
+        setAllFeedback(feedbackResults.filter(f => f && f.total > 0))
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
-  } catch (err) {
-    console.error(err)
-  } finally {
-    setLoading(false)
   }
-}
 
   const handleLogout = () => {
     logout()
@@ -567,95 +562,23 @@ const DashboardPage = () => {
                   )}
 
                   <form onSubmit={handleCreateLocation}>
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '20px',
-                      marginBottom: '20px'
-                    }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                       <div>
                         <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '8px' }}>
                           Building Name *
                         </label>
                         <input name="buildingName" type="text" value={locationForm.buildingName}
-                          onChange={handleLocationChange} placeholder="e.g. Main Building"
+                          onChange={handleLocationChange} placeholder="e.g. City College Ltd"
                           required style={inputStyle} />
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '8px' }}>
-                          Room Number *
-                        </label>
-                        <input name="roomNumber" type="text" value={locationForm.roomNumber}
-                          onChange={handleLocationChange} placeholder="e.g. 301"
-                          required style={inputStyle} />
-                      </div>
-                    </div>
-
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '20px',
-                      marginBottom: '20px'
-                    }}>
                       <div>
                         <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '8px' }}>
                           Room Name
                         </label>
                         <input name="roomName" type="text" value={locationForm.roomName}
-                          onChange={handleLocationChange} placeholder="e.g. Computer Lab"
+                          onChange={handleLocationChange} placeholder="e.g. Main Hall"
                           style={inputStyle} />
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '8px' }}>
-                          Capacity *
-                        </label>
-                        <input name="capacity" type="number" value={locationForm.capacity}
-                          onChange={handleLocationChange} placeholder="e.g. 50"
-                          required min="1" style={inputStyle} />
-                      </div>
-                    </div>
-
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '20px',
-                      marginBottom: '20px'
-                    }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '8px' }}>
-                          Room Type
-                        </label>
-                        <select name="roomType" value={locationForm.roomType}
-                          onChange={handleLocationChange} style={inputStyle}>
-                          <option value="classroom">Classroom</option>
-                          <option value="lab">Lab</option>
-                          <option value="hall">Hall</option>
-                          <option value="auditorium">Auditorium</option>
-                          <option value="conference">Conference Room</option>
-                          <option value="outdoor">Outdoor</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '8px' }}>
-                          Floor
-                        </label>
-                        <input name="floor" type="number" value={locationForm.floor}
-                          onChange={handleLocationChange} placeholder="e.g. 3"
-                          style={inputStyle} />
-                      </div>
-                    </div>
-
-                    <div style={{ marginBottom: '25px' }}>
-                      <label style={{
-                        display: 'flex', alignItems: 'center',
-                        gap: '10px', cursor: 'pointer', fontSize: '15px'
-                      }}>
-                        <input name="accessibility" type="checkbox"
-                          checked={locationForm.accessibility}
-                          onChange={handleLocationChange}
-                          style={{ width: '18px', height: '18px', accentColor: '#ff6b35' }} />
-                        Wheelchair accessible
-                      </label>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
@@ -705,8 +628,8 @@ const DashboardPage = () => {
                     }}>
                       <div>
                         <div style={{ fontSize: '16px', fontWeight: '700', marginBottom: '5px' }}>
-                          {loc.buildingName} - Room {loc.roomNumber}
-                          {loc.roomName ? ` (${loc.roomName})` : ''}
+                          {loc.buildingName}
+                          {loc.roomName ? ` - ${loc.roomName}` : ''}
                         </div>
                         <div style={{ fontSize: '14px', color: '#666' }}>
                           Capacity: {loc.capacity} • Type: {loc.roomType}
