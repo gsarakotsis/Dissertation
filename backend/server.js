@@ -59,30 +59,9 @@ const createDefaultLocations = async () => {
   try {
     const Location = require('./models/Location')
     const locations = [
-      {
-        buildingName: 'City College Ltd',
-        roomNumber: '1',
-        roomName: 'Main Campus',
-        capacity: 500,
-        roomType: 'hall',
-        externalAddress: 'Proxenou Koromila 24, Thessaloniki'
-      },
-      {
-        buildingName: 'City College Leontos Sofou',
-        roomNumber: '1',
-        roomName: 'Leontos Sofou Campus',
-        capacity: 300,
-        roomType: 'hall',
-        externalAddress: 'Leontos Sofou 3, Thessaloniki'
-      },
-      {
-        buildingName: 'City College Galini Campus',
-        roomNumber: '1',
-        roomName: 'Galini Campus',
-        capacity: 200,
-        roomType: 'hall',
-        externalAddress: 'Galini Campus, Thessaloniki'
-      }
+      { buildingName: 'City College Ltd', roomName: 'Proxenou Koromila 24' },
+      { buildingName: 'City College Leontos Sofou', roomName: 'Leontos Sofou 3' },
+      { buildingName: 'City College Galini Campus', roomName: 'Galini Campus' }
     ]
 
     for (const loc of locations) {
