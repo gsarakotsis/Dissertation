@@ -32,7 +32,7 @@ const eventSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ['draft', 'pending', 'approved', 'rejected', 'published', 'cancelled', 'completed'],
+    enum: ['draft', 'pending', 'approved', 'rejected', 'published', 'cancelled', 'completed', 'archived'],
     default: 'draft'
   },
   approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

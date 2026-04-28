@@ -5,12 +5,14 @@ const User = require('../models/User')
 // GET /api/events
 const getEvents = async (req, res) => {
   try {
-    const { search, type, department, showAll } = req.query
+    const { search, type, department, showAll, status } = req.query
 
     let query = {}
 
     if (showAll && req.user?.role === 'admin') {
-      // Admin βλέπει όλα τα events
+      // Admin βλέπει όλα
+    } else if (status === 'archived') {
+      query.status = 'archived'
     } else {
       query.status = 'published'
     }
