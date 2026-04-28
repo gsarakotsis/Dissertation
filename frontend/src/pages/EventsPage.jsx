@@ -23,6 +23,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [activeType, setActiveType] = useState('')
+  const [selectedYear, setSelectedYear] = useState('')
 
   useEffect(() => {
     fetchEvents()
@@ -42,10 +43,18 @@ const EventsPage = () => {
     }
   }
 
-  const filteredEvents = events.filter(event =>
-    event.title.toLowerCase().includes(search.toLowerCase()) ||
-    event.description.toLowerCase().includes(search.toLowerCase())
-  )
+  const years = [...new Set(events.map(e =>
+    new Date(e.eventDate).getFullYear()
+  ))].sort((a, b) => b - a)
+
+  const filteredEvents = events.filter(event => {
+    const matchesSearch = event.title.toLowerCase().includes(search.toLowerCase()) ||
+      event.description.toLowerCase().includes(search.toLowerCase())
+    const matchesYear = selectedYear
+      ? new Date(event.eventDate).getFullYear() === parseInt(selectedYear)
+      : true
+    return matchesSearch && matchesYear
+  })
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-GB', {
@@ -87,22 +96,42 @@ const EventsPage = () => {
         zIndex: 100
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '25px 30px' }}>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search events by title or description..."
-            style={{
-              width: '100%',
-              padding: '15px 20px',
-              border: '2px solid #e0e0e0',
-              borderRadius: '8px',
-              fontSize: '16px',
-              marginBottom: '20px',
-              outline: 'none',
-              boxSizing: 'border-box'
-            }}
-          />
+          <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search events by title or description..."
+              style={{
+                flex: 1,
+                padding: '15px 20px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '8px',
+                fontSize: '16px',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              style={{
+                padding: '15px 20px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '8px',
+                fontSize: '16px',
+                outline: 'none',
+                backgroundColor: '#ffffff',
+                minWidth: '140px',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="">All Years</option>
+              {years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             {EVENT_TYPES.map(type => (
               <button

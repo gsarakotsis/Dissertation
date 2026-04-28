@@ -11,6 +11,7 @@ import ExternalDashboardPage from './pages/ExternalDashboardPage'
 import ProfilePage from './pages/ProfilePage'
 import ProtectedRoute from './components/ProtectedRoute'
 import AboutPage from './pages/AboutPage'
+import ArchivePage from './pages/ArchivePage'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/events/:id" element={<EventDetailsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/archive" element={<ArchivePage />} />
 
         <Route element={<ProtectedRoute roles={['admin', 'cc_organizer']} />}>
           <Route path="/dashboard" element={<DashboardPage />} />

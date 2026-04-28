@@ -54,6 +54,10 @@ const Header = () => {
             color: '#1a1a1a', textDecoration: 'none',
             fontSize: '18px', fontWeight: '600'
           }}>Events</Link>
+          <Link to="/archive" style={{
+            color: '#1a1a1a', textDecoration: 'none',
+            fontSize: '18px', fontWeight: '600'
+          }}>Archive</Link>
           <Link to="/about" style={{
             color: '#1a1a1a', textDecoration: 'none',
             fontSize: '18px', fontWeight: '600'

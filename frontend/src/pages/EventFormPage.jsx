@@ -235,10 +235,18 @@ const EventFormPage = () => {
               </div>
               {!isExternal && (
                 <div>
-                  <label style={labelStyle}>Department</label>
-                  <input name="department" type="text" value={formData.department}
-                    onChange={handleChange} placeholder="e.g. Computer Science"
-                    style={inputStyle} />
+                  <label style={labelStyle}>Organizing Department</label>
+                  <select name="department" value={formData.department}
+                    onChange={handleChange} style={inputStyle}>
+                    <option value="">Select department</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Business Administration">Business Administration</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Arts & Design">Arts & Design</option>
+                    <option value="Natural Sciences">Natural Sciences</option>
+                    <option value="Humanities">Humanities</option>
+                    <option value="Student Union">Student Union</option>
+                  </select>
                 </div>
               )}
             </div>
@@ -327,7 +335,7 @@ const EventFormPage = () => {
                       <option value="">Select location</option>
                       {locations.map(loc => (
                         <option key={loc._id} value={loc._id}>
-                          {loc.buildingName} - Room {loc.roomNumber} (Capacity: {loc.capacity})
+                          {loc.buildingName}{loc.roomName ? ` - ${loc.roomName}` : ''}
                         </option>
                       ))}
                     </select>
